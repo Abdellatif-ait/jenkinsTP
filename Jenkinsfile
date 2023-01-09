@@ -11,8 +11,23 @@ pipeline {
     bat 'gradle test'
     }
     }
-
+stage ('deploy') { // la phase deploy
+    steps {
+    bat 'gradle deploy'
+    }
+    }
+    stage('sonar') { // la phase sonar
+    steps {
+    bat 'gradle sonarqube'
+    }
+    }
+    stage('notify') { // la phase publish
+    steps {
+    notifyEvents message: 'Hello <b>world</b>', token: 'SzMXDLPEn2TB90mdew7iN6VjO_paqZP0'
+    }
+    }
   }
+
 }
 
 }
