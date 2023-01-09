@@ -26,6 +26,7 @@ stage ('deploy') { // la phase deploy
     notifyEvents message: 'Hello <b>world</b>', token: 'SzMXDLPEn2TB90mdew7iN6VjO_paqZP0'
     }
     }
+    
   }
 
 }
