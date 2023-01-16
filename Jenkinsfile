@@ -1,112 +1,85 @@
 pipeline {
   agent any
   stages {
-    stage ('test') { // la phase test
-        post {
-        failure {
-          script {
-            mail= " test termine avec echec "
-          }
 
-        }
+   stage ('Test') { // la phase build
+steps {
+bat 'gradlew test'
+ junit 'build/test-results/test/TEST-Matrix.xml'
+
+   cucumber buildStatus: 'UNSTABLE',
+                reportTitle: 'My report',
+                fileIncludePattern: 'target/report.json',
+
+                trendsLimit: 10
+
+}
+}
 
 
-        success {
-          script {
-            mail=" test termine avec succes "
-          }
-
-        }
-
-      }
-      steps {
-            bat 'gradle test'
-            junit 'build/test-results/test/TEST-Matrix.xml'
-              cucumber buildStatus: 'UNSTABLE',
-                    reportTitle: 'My report',
-                    fileIncludePattern: 'target/*.json',
-                    trendsLimit: 10
-
-            }
-    }
         stage('Code Analysis') {
-                post {
-        failure {
-          script {
-            mail= " Code Analysis termine avec echec "
-          }
-
-        }
-
-        success {
-          script {
-            mail=" Code analysis termine avec succes "
-          }
-
-        }
-
-      }
-
           steps {
             withSonarQubeEnv('sonar') {
-              bat 'gradle sonarQube'
+              bat 'gradle sonar'
             }
 
-            waitForQualityGate true
+
           }
         }
 
-       stage('Build') {
-               post {
-        failure {
-          script {
-            mail= " Build termine avec echec "
-          }
 
+         stage("Code Quality") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
         }
 
-        success {
-          script {
-            mail=" Build termine avec succes "
-          }
 
-        }
+     stage('build') {
 
-      }
+
       steps {
-        bat 'gradle build'
+        bat(script: 'gradle build', label: 'gradle build')
         bat 'gradle javadoc'
         archiveArtifacts 'build/libs/*.jar'
-        archiveArtifacts 'build/docs/javadoc/**'
+        junit(testResults: 'build/reports/tests/test', allowEmptyResults: true)
+
       }
     }
-        stage('Deployment') {
-                post {
-        failure {
-          script {
-            mail= " Deployement terminé avec échec "
-          }
 
-        }
-
-        success {
-          script {
-            mail=" Deployement termine avec succes "
-          }
-        }
-
-      }
+     stage('Deploy') {
       steps {
         bat 'gradle publish'
-        }
-       }
-        stage('Deployement Notification') {
-        steps {
-            notifyEvents message: "deployed", token: 'SzMXDLPEn2TB90mdew7iN6VjO_paqZP0'
-        }
+      }
+    }
 
-}//stages
+     stage('Notification') {
+      steps {
 
-}//pipeline
+       notifyEvents message: 'New build is Created success', token: '19CspoS1m7PFyPISAMjb-9fKKeogldrl'
+         notifyEvents message: 'New build field', token: '19CspoS1m7PFyPISAMjb-9fKKeogldrl'
+
+        slackSend(baseUrl: 'https://hooks.slack.com/services/', token: 'xoxe.xoxp-1-Mi0yLTQ2Mzk2NzU1NzcxNTgtNDY0ODc0MDc0MzA5Mi00NjM5NzE5MzcxOTQyLTQ2NzAwMTg2NDIzMDQtMDE1YjRkMjQ3Y2M1Nzk2YmU5ODFhODE4ZjI2OTY2MzVmNjNmMTQ2ZGY4NmMwYjE0YjRiY2E3YmYzZjlkNDQ5OA', message: 'New build is Created', channel: 'OGL')
+      }
+    }
 
 
+
+
+
+
+}
+
+  post {
+        success {
+        notifyEvents message: 'Successfully deployed', token: 'SzMXDLPEn2TB90mdew7iN6VjO_paqZP0'        }
+        failure {
+            notifyEvents message: 'Failed deployed', token: 'SzMXDLPEn2TB90mdew7iN6VjO_paqZP0'        }
+
+      }
+
+ }
