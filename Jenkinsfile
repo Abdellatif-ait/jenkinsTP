@@ -10,6 +10,7 @@ pipeline {
 
         }
 
+
         success {
           script {
             mail=" test termine avec succes "
