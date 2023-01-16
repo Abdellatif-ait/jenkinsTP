@@ -60,12 +60,12 @@ bat 'gradlew test'
 
      stage('Notification') {
       steps {
-        notifyEvents message: 'Successfully deployed', token: 'SzMXDLPEn2TB90mdew7iN6VjO_paqZP0'        }
+        notifyEvents message: 'Successfully deployed', token: 'SzMXDLPEn2TB90mdew7iN6VjO_paqZP0'
+        }
 
       }
     }
 
-}
 
   post {
         failure {
