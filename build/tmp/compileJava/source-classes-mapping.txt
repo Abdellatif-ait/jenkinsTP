@@ -1,0 +1,8 @@
+org/example/Main.java
+ org.example.Main
+com/example/exception/NoSquareException.java
+ com.example.exception.NoSquareException
+com/example/model/Matrix.java
+ com.example.model.Matrix
+com/example/service/MatrixMathematics.java
+ com.example.service.MatrixMathematics

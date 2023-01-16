@@ -1,0 +1,6 @@
+projectKey=com.example:jenkinsTP
+serverUrl=http://localhost:9000
+serverVersion=7.4.0.18908
+dashboardUrl=http://localhost:9000/dashboard?id=com.example%3AjenkinsTP
+ceTaskId=AYW5oT-fpkti6ij8SsTH
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYW5oT-fpkti6ij8SsTH

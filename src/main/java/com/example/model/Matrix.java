@@ -99,5 +99,17 @@ public class Matrix {
 	return  true;
 
 	}
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 31 * result + nrows;
+		result = 31 * result + ncols;
+		for (int i =0;i<nrows;i++) {
+			for (int j=0;j< ncols;j++) {
+				result = 31 * result + (int) data[i][j];
+			}
+		}
+		return result;
+	}
 
 }
