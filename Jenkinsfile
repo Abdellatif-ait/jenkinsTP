@@ -92,7 +92,6 @@ pipeline {
           script {
             mail=" Deployement termine avec succes "
           }
-
         }
 
       }
@@ -108,4 +107,5 @@ pipeline {
 }//stages
 
 }//pipeline
+
 
